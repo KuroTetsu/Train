@@ -1,2 +1,4 @@
-a.py
-.gitignore
+# Flask
+__pycache__/
+*.py[cod]
+*$py.class
