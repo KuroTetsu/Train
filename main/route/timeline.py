@@ -3,35 +3,26 @@ from . import routes
 from main.controller import stream
 from main.controller import book
 
-@routes.route('/')
-def index():
-    return 'Hello'
-
-@routes.route('/timeline')
-def timeline_get():
-    streams = stream.get_timeline()
+@routes.route('/notes') #return all notes
+@routes.route('/notes/<int:id>') #return specific note by id
+def get_all_notes(id=0):
+    if id:
+        all_notes = stream.notes_by_id(id)
+        data = {
+            "id": all_notes.id,
+            "note": all_notes.notes,
+            "create_on": all_notes.timestamp.timestamp()
+        }
+    else:
+        all_notes = stream.all_notes()
+        data = []
+        for note in all_notes:
+            data.append({
+                "id": note.id,
+                "note": note.notes,
+                "created_on": note.timestamp.timestamp()
+            })
     response = {
-        'hasil' : streams['a'],
-        'hasil_2': streams['a'] + streams['b'],
-    }
-
-    return jsonify(response), 200
-
-
-@routes.route('/rekomendasi')
-def rekomendasi():
-    
-    page = request.args.get("page", "1")
-    filter_1 = request.args.get("filter_1", "update") #update, new, rank
-    filter_2 = request.args.get("filter_2", None) #all, manga, manhwa, manhua
-    filter_3 = request.args.get("filter_3", None) #all, action, adv, comedy, ..
-
-    page = int(page)
-    rekomendasi = book.rekomendasi(page, filter_1, 'manhua', filter_3)
-
-    response = {
-        'result': rekomendasi['data'],
-        'next': rekomendasi['next'],
-        'prev': rekomendasi['prev']
+        'result': data
     }
     return jsonify(response), 200

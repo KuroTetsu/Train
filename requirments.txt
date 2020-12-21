@@ -1,1 +1,4 @@
-test
+Flask
+requests
+flask-sqlalchemy
+mysqlclient
