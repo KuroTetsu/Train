@@ -15,17 +15,9 @@ def get_all_notes(id=0):
     try:
         data = []
         for note in all_notes:
-            data.append({
-                "id": note.id,
-                "note": note.notes,
-                "created_on": note.timestamp.timestamp()
-            })
+            data.append(response_note(note))
     except:
-        data = {
-            "id": all_notes.id,
-            "note": all_notes.notes,
-            "created_on": all_notes.timestamp.timestamp()
-        }
+        data = response_note(all_notes)
 
     response = {
         'result': data
@@ -39,19 +31,37 @@ def add_note():
     data = stream.add_note(note)
 
     response = {
-        'result': {
-            "id": data.id,
-            "note": data.notes,
-            "create_on": data.timestamp.timestamp()
-        }
+        'result': response_note(data)
     }
 
     return jsonify(response), 200
 
 @routes.route('/delete/<int:id>', methods=["DELETE"])
 def delete_note(id):
-    data = stream.delete_note(id)
-    if data:
+    result = stream.delete_note(id)
+    
+    if result:
         return jsonify(), 204
     else:
         return jsonify({"result":"note not found"}), 404
+
+@routes.route('/edit/<int:id>', methods=['PATCH'])
+def update_note(id):
+    note = request.form.get("note")
+    
+    try:
+        data = stream.update_note(id,note)
+        response = {
+            'result':response_note(data)
+        }
+
+        return jsonify(response), 200
+    except:
+        return jsonify({"result":"note not found"}), 404
+
+def response_note(note):
+    return {
+        "id": note.id,
+        "note": note.notes,
+        "create_on": note.timestamp.timestamp()
+    }

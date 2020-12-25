@@ -23,3 +23,11 @@ def delete_note(id):
         return True
     else:
         return False
+
+def update_note(id:int, note:str, archive:int=0):
+    data = notes_by_id(id)
+    data.notes = note
+    data.archive = archive
+    db.session.add(data)
+    db.session.commit()
+    return data

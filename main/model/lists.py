@@ -3,6 +3,8 @@ from datetime import datetime
 class listnote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
+    archive = db.Column(db.Integer, default=0)
+
     notes = db.Column(db.String(1000), default="")
 
     is_deleted = db.Column(db.Integer, default=0)
